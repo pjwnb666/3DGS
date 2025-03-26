@@ -31,11 +31,11 @@
 
 <center>图2:文中定义的多视图最高采样频率，其中1n（Pk）是表示高斯中心Pk落入第n个相机的视锥内时评估图元可见性的指标函数
 
-![image-20250109164347820](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250109164347820.png)
+![image](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250109164347820.png)
 
 <center>图3:3DGS原始的3D高斯体定义
 
-![image-20250109164048158](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250109164048158.png)
+![image](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250109164048158.png)
 
 <center>图4:3D平滑滤波公式，s是控制过滤器的参数
 
@@ -45,7 +45,7 @@
 
 - 2D Mip滤波器在成像过程中复制箱式滤波器，以精确到近似单个像素为目标。而EWA滤波器的大小是根据经验选择的,大概在3X3像素区域，会导致结果过度平滑
 
-  ![image-20250109165216674](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250109165216674.png)
+  ![image](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250109165216674.png)
 
 <center>图5:2D Mip滤波器公式
 
@@ -63,11 +63,11 @@
 
 - 分别对40%的全分辨率图像和20%的其他图像分辨率进行采样。实验结果基于单尺度训练、多尺度测试，1×、1/2、1/4和1/8是分辨率设置，用来模拟缩小效果
 
-  ![image-20250109170336193](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250109170336193.png)
+  ![image](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250109170336193.png)
 
   <center>图6:在Blender数据集上取得的表现
 
-![image-20250109170913656](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250109170913656.png)
+![image](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250109170913656.png)
 
 <center>图7:效果定性对比演示
 
@@ -75,11 +75,11 @@
 
 - 实验结果基于单尺度训练、多尺度测试，1×、1/2、1/4和1/8是分辨率设置，用来模拟缩小效果
 
-![image-20250109170442175](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250109170442175.png)
+![image](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250109170442175.png)
 
 <center>图8:在Mip-NeRF 360数据集上取得的表现
 
-![image-20250109171234897](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250109171234897.png)
+![image](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250109171234897.png)
 
 <center>图9：在经过八倍降采样的图像上训练的结果定性对比演示
 
