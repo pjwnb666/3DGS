@@ -87,11 +87,11 @@
 
   ![image-20250318172720433](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250318172720433.png)
 
-![image-20250310165538408]([https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250310165538408.png)
+![image-20250310165538408](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250310165538408.png)
 
 - 展开是基于二元高斯分布的指数形式，拆解出沿y2方向的部分，然后根据给出的高斯积分公式带入得到图中公式(15)，B/2A代表高斯概率分布的偏移修正
 
-![image-20250310171455856]([https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250310171455856.png)
+![image-20250310171455856](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250310171455856.png)
 
 - Dk是激光雷达数据里面固定的捕获视图K的深度
 
