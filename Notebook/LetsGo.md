@@ -40,7 +40,7 @@
 
 - 配备数据处理单元用于实时SLAM计算，可在手机上实时预览3D点云重建结果
 
-  ![image-20250310152748135](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250310152748135.png)
+  ![image-20250310152748135](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250310152748135.png)
 
 **2.采集策略：**
 
