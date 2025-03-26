@@ -3,7 +3,7 @@
 ## 一、简介：
 
 - 头发建模在过去二十年里借助神经建模和渲染的进步，从显示重建发展到隐式重建，但是构建这样的精细模型要不然需要建模工程师帮忙，要不然就得使用昂贵的相机设备搭配精心设计的可控环境场景，所有这些方法仅限于实验室场景。
-- 隐式表达无法编辑照明条件，无法制作动态头发重建场景，与传统CG Pipeline不方便兼容。最新进展出现了混合表示方式，将外观特征转换为三维代理模型，如线和点[62,70]，或转换为更粗糙的几何形状[67]。（这里3DGS使用带球谐函数参数的可编辑高斯体具有优势）然后将这些代理模型渲染成二维，再通过神经渲染技术将其复杂地解码为头发外观，这里特别提到了神经链技术，即将头皮上编码为UV纹理的特征向量解码为与特定头皮位置相对应的精细发束，然后使用从合成数据集中学习的先验进行绞合级头发重建。最终外观渲染过程涉及大量神经渲染工作，（或许是计算开销太大、耗时太长、动态变换场景很费劲）限制了制作动态头发重建场景的可能性
+- 隐式表达无法编辑照明条件，无法制作动态头发重建场景，与传统CG Pipeline不方便兼容。最新进展出现了混合表示方式，将外观特征转换为三维代理模型，如线和点，或转换为更粗糙的几何形状。（这里3DGS使用带球谐函数参数的可编辑高斯体具有优势）然后将这些代理模型渲染成二维，再通过神经渲染技术将其复杂地解码为头发外观，这里特别提到了神经链技术，即将头皮上编码为UV纹理的特征向量解码为与特定头皮位置相对应的精细发束，然后使用从合成数据集中学习的先验进行绞合级头发重建。最终外观渲染过程涉及大量神经渲染工作，（或许是计算开销太大、耗时太长、动态变换场景很费劲）限制了制作动态头发重建场景的可能性
 - 3DGS使用带球谐函数参数的可编辑高斯体非常灵活，能实现仅使用手持设备进行视频输入就能达到生动的头发渲染（可动态实现）、编辑、重新照明、的效果，并且与传统的CG Pipeline无缝集成。
 - 作者修改了初始化时3DGS的基本形状,将其修改为圆柱形3D高斯体。圆柱形高斯体具备三维高斯特征，其半径相对于其长度要小得多，方便将发束描绘成一系列链接的圆柱形三维高斯基本体。
 - 作者先初始化了一组具有固定小半径的圆柱形3D高斯，从头部和头发网格上的点采样（包括建立RealHair dataset和LetsGo一样的招数，通讯作者有几个重复，可能出自同一课题组）通过可微分光栅化对其进行优化。再用Neural Haircut的方法从预训练的发束解码器生成粗发束，将圆柱形3D高斯分布分配给粗发束的两个相邻节点之间的每个部分，从而创建一个连接序列。之后再细化GaussianHair模型，（编码器-解码器）
@@ -37,7 +37,7 @@
 
 - 文中提到用粒子p<sub>i</sub>=u<sub>i</sub>+s<sub>i</sub>**d<sub>i</sub>**/2，这里的粒子是一个抽象的数学点表示。每根发丝的弯曲、倾斜可以通过这些粒子来表示，粒子可以在渲染过程中灵活地应用不同的光照、反射、散射等物理现象。，u<sub>i</sub>是高斯体中心点位置，s<sub>i</sub>是发束长度，**d<sub>i</sub>**是发束的方向向量，粒子位置相当于高斯体端点位置，然后颜色渲染和原版3DGS公式一样，但是对不透明度，球谐函数，还有旋转矩阵、缩放矩阵作了优化。
 
-  ![image-20250318171715897](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250318171715897.png)
+  ![image-20250318171715897](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250318171715897.png)
 
 - T<sub>i</sub> 是透明度，c<sub>i</sub>是球谐函数，w<sub>i</sub>是之前的点作的颜色贡献（可理解为不透明度），也就是一个权重，即有多少的光在这个点留下了
 
@@ -54,19 +54,19 @@
 
 从重建好的头发和身体网格中采样生成一组微小的3D高斯圆柱体分布，后续优化过程保持r不变，用原版的3DGS去优化其他参数
 
-![image-20250318192434056](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250318192434056.png)
+![image-20250318192434056](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250318192434056.png)
 
 这是方向损失函数，P<sub>i</sub> 表示重建的这组高斯体方向集在图像序列i上像素j的投影，和O<sub>i</sub>实际像素i上的2D方向集作点积，如果二者方向一致的话，Loss为0。这里作者的Loss函数把原文的λ参数省了。
 
-![image-20250318193107450](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250318193107450.png)
+![image-20250318193107450](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250318193107450.png)
 
 通过渲染FLAME头发网格得到头发纹理，然后UV映射得到二维映射特征图，特征图每个像素包含纹理、几何结构信息，这些会贴在3D高斯体上，得到带纹理信息的3D高斯体，然后通过解码器得到粗发束，粗发束再去优化，解码过程会从FLAME头部网格H上的头皮区域均匀采样根点，这是发束点（发束和头皮的交点），这里的初步渲染FLAME应该还是原版的3DGS。
 
-![image-20250318194120315](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250318194120315.png)
+![image-20250318194120315](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250318194120315.png)
 
 粗发束优化第一步排除头部内的高斯体。
 
-![image-20250318200016717](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250318200016717.png)
+![image-20250318200016717](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250318200016717.png)
 
 - 取头皮区域的点p，找离它最近的高斯体O，计算二者的几何上的距离，（1-dp*do)是衡量二者的方向，方向一致这项为0。
 
@@ -74,23 +74,23 @@
 - 然后设置生成N根发束，每根发束L=100个节点，N个固定的发根位于头皮，N∗（L−1）个圆柱体3D高斯分布，每个都包含可训练的参数，包括旋转、长度、颜色和不透明度。
 - 把原版3DGS中的Adam优化器改成了SGD优化器，专门设置了一个针对旋转和尺度的指数衰减学习率
 
-![image-20250319162956101](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319162956101.png)
+![image-20250319162956101](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319162956101.png)
 
 - 把原版光度损失作为纹理损失
 
-![image-20250319164050875](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319164050875.png)
+![image-20250319164050875](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319164050875.png)
 
 - 把Alpha A得到的Alpha Map里的除了Hair Mask，还有 alpha mask，数值用于判断头发区域透明程度，头发区域的透明度接近 1即为完全不透明。用这个损失计算不透明度一致性
 
-![image-20250319164556498](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319164556498.png)
+![image-20250319164556498](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319164556498.png)
 
 - 用于控制每条发束上每个高斯体的不透明度变换，防止其不透明度突变。图中式子表示相邻两个高斯体的不透明度变化量
 
-![image-20250319164735024](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319164735024.png)
+![image-20250319164735024](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319164735024.png)
 
 - 同理这个用于约束相邻两个高斯体直径和长度，防止突变
 
-![image-20250319164833463](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319164833463.png)
+![image-20250319164833463](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319164833463.png)
 
 - 总损失函数为上述四个损失函数相加，这些损失函数是为了之后的消融实验设计的
 - 针对头发遮盖身体问题，先训练渲染头部、身体的模型，然后固定不动了之后再去训练头发，不需要用到HairMask
@@ -100,13 +100,13 @@
 
 ### 5.1散射参数化
 
-![image-20250319171845939](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319171845939.png)
+![image-20250319171845939](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319171845939.png)
 
 - 光线经过发束有反射，透射+透射，透射+反射+透射，这是头发纤维散射示意图，这些结构在**Marschner**有详细描述，作者集成了Marschner的头发模型，将其描述为一个函数，这里为了加快渲染速度，用的是UE4里面的Marschner模型近似版本
 
-![image-20250319172448262](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319172448262.png)
+![image-20250319172448262](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319172448262.png)
 
-![image-20250319172831001](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319172831001.png)
+![image-20250319172831001](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319172831001.png)
 
 - 引入散射函数S描述从w<sub>i</sub>方向入射，w<sub>o</sub> 出射的光的分布，然后E是从w<sub>o</sub>方向观看时，各个方向w<sub>i</sub>光出射度衰减的累计结果
 - M是发束长度上的分布，N是宽度上的分布，作者按照图a建立了坐标系来量化
@@ -117,7 +117,7 @@
 
   主要散射成分是从点光源到达这个高斯体的光，但经过其他发束散射过来的光也很重要，这种也要考虑发束对光线的衰减作用。
 
-  ![image-20250319195422665](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319195422665.png)![image-20250319195606929](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319195606929.png)![image-20250319195804457](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319195804457.png)
+  ![image-20250319195422665](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319195422665.png)![image-20250319195606929](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319195606929.png)![image-20250319195804457](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319195804457.png)
 
   n是垂直于d并在由d和ω<sub>0</sub>定义的同一平面内的伪法线方向,L(b) 是基础颜色的辐射亮度，S<sub>local</sub>是局部散射的强度，b 代表的是基础颜色的亮度
 
@@ -130,11 +130,11 @@
 - 用许多点光源搭建了一个光罩，然后按前面方法拍摄视频，采集了一个RealHair Dataset的数据集，数据集里什么人种什么颜色什么类型的头发都有，并且用GPT-4来标注图像里人物的性别、大致年龄、头发长度范围和颜色
 - 和各种先进方法在几何结构衡量参数上对比（这个基于3DGS改的，加入了几个损失函数，不透明度累计中加入了散射模型，把原版3DGS中的Adam优化器改成了SGD优化器，专门设置了一个针对旋转和尺度的指数衰减学习率，在训练策略和渲染方式上都没改，抠图去背景后网格化后再采样，应该是3DGS和它最接近，但3DGS原版存在伪影问题的）
 
-![image-20250319200705648](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319200705648.png)
+![image-20250319200705648](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319200705648.png)
 
 - 去除设计的纹理和不透明度损失函数做消融实验，去除纹理损失函数有明显伪影，去除不透明度损失函数发束不连续
 
-![image-20250319201412924](C:\Users\86138\AppData\Roaming\Typora\typora-user-images\image-20250319201412924.png)
+![image-20250319201412924](https://github.com/pjwnb666/3DGS/blob/main/Notebook/images/image-20250319201412924.png)
 
 
 
